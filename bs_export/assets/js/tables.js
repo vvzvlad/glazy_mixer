@@ -36,6 +36,14 @@ function generate_rect_table(x,y,data,root){
   calc1 = document.querySelector('.calc-2');
 
   for(let i = 1; i <= x*y; i++){
+    if(data[i] && data[i]["content"]) {
+      let temp = data[i]["content"]["3"];
+      data[i]["content"]["3"] = data[i]["content"]["4"];
+      data[i]["content"]["4"] = temp;
+    }
+  }
+
+  for(let i = 1; i <= x*y; i++){
     svg += '<svg class="calc-2-svg" viewBox="0 0 74 74"  xmlns="http://www.w3.org/2000/svg">\n\
               <rect class="calc-bg1" x="0" y="0" width="37" height="37" style="\n\
                 fill:'+ (data[i]["content"]["1"][2] ? data[i]["content"]["1"][2] : "transparent") +'; \n\

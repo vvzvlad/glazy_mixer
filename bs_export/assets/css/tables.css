@@ -10,7 +10,11 @@
 
 }
 .calc-2{
-
+  display: grid;
+  gap: 10px;
+  grid-auto-rows: min-content;
+  width: max-content;
+  margin: 0 auto 20px;
 }
 .calc-3{
   display:inline-block;
@@ -91,11 +95,6 @@
   /*font-weight:700;*/
 }
 
-.calc-1,
-.calc-2{
-  display: inline-grid;
-  gap:10px;
-}
 .calc-txt2-1-1,
 .calc-txt2-2-1,
 .calc-txt2-3-1,

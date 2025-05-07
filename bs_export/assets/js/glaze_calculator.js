@@ -33,9 +33,145 @@ function calculate_powder_and_water(volume, target_density, powder_density) {
   };
 } 
 
+//---------------- square ----------------
 
+function generate_square_data(size, tester_volume) {
+  const data = {};
+  // Цвета для четырех компонентов
+  const a_color = '#FFF200';
+  const b_color = '#ED1C24';
+  const c_color = '#645FAA';
+  const d_color = '#00A651';
+  
+  // Создаем таблицу пропорций в зависимости от размера
+  const ratios = generate_square_ratios(size);
+  
+  let point_index = 1;
+  
+  for (let i = 0; i < ratios.length; i++) {
+    const a_ratio = ratios[i][0];  // Процент первого цвета
+    const b_ratio = ratios[i][1]; // Процент второго цвета
+    const c_ratio = ratios[i][2]; // Процент третьего цвета
+    const d_ratio = ratios[i][3]; // Процент четвертого цвета
+    
+    // Объем компонентов в зависимости от процентов
+    const a_volume = a_ratio > 0 ? Math.round(tester_volume * a_ratio / 100 * 2) / 2 : null;
+    const b_volume = b_ratio > 0 ? Math.round(tester_volume * b_ratio / 100 * 2) / 2 : null;
+    const c_volume = c_ratio > 0 ? Math.round(tester_volume * c_ratio / 100 * 2) / 2 : null;
+    const d_volume = d_ratio > 0 ? Math.round(tester_volume * d_ratio / 100 * 2) / 2 : null;
+    
+    // Определяем цвета компонентов
+    const first_color = a_ratio > 0 ? a_color : null;
+    const second_color = b_ratio > 0 ? b_color : null;
+    const third_color = c_ratio > 0 ? c_color : null;
+    const fourth_color = d_ratio > 0 ? d_color : null;
 
+    // Определяем имя точки
+    let name = `${point_index}`;
 
+    data[point_index] = {
+      name: name,
+      content: {
+        1: [a_ratio > 0 ? a_ratio : null, a_volume, first_color],
+        2: [b_ratio > 0 ? b_ratio : null, b_volume, second_color],
+        3: [c_ratio > 0 ? c_ratio : null, c_volume, third_color],
+        4: [d_ratio > 0 ? d_ratio : null, d_volume, fourth_color]
+      }
+    };
+    
+    point_index++;
+  }
+  
+  return data;
+}
+
+function generate_square_ratios(size) {
+  const ratio_tables = {
+    3: [ 
+      [100, 0, 0, 0], [50, 50, 0, 0], [0, 100, 0, 0],
+      [50, 0, 50, 0], [25, 25, 25, 25], [0, 50, 0, 50],
+      [0, 0, 100, 0], [0, 0, 50, 50], [0, 0, 0, 100] 
+    ],
+    4: [
+      [100, 0, 0, 0], [67, 33, 0, 0], [33, 67, 0, 0], [0, 100, 0, 0],
+      [67, 0, 33, 0], [45, 22, 22, 11], [22, 45, 11, 22], [0, 67, 0, 33],
+      [33, 0, 67, 0], [22, 11, 45, 22], [11, 22, 22, 45], [0, 33, 0, 67],
+      [0, 0, 100, 0], [0, 0, 67, 33], [0, 0, 33, 67], [0, 0, 0, 100]
+    ],
+    5: [
+      [100, 0, 0, 0], [75, 25, 0, 0], [50, 50, 0, 0], [25, 75, 0, 0], [0, 100, 0, 0],
+      [75, 0, 25, 0], [56, 19, 19, 6], [38, 38, 12, 12], [19, 56, 6, 19], [0, 75, 0, 25],
+      [50, 0, 50, 0], [38, 12, 38, 12], [25, 25, 25, 25], [12, 38, 12, 38], [0, 50, 0, 50],
+      [25, 0, 75, 0], [19, 6, 56, 19], [12, 12, 38, 38], [6, 19, 19, 56], [0, 25, 0, 75],
+      [0, 0, 100, 0], [0, 0, 75, 25], [0, 0, 50, 50], [0, 0, 25, 75], [0, 0, 0, 100]
+    ]
+  };
+  
+  // Возвращаем таблицу пропорций для заданного размера
+  return ratio_tables[size] || ratio_tables[3]; // Если размер не найден, используем размер 3
+}
+
+function generate_square_summary(data, size, density, dry_density) {
+  let total_a_volume = 0;
+  let total_b_volume = 0;
+  let total_c_volume = 0;
+  let total_d_volume = 0;
+  
+  // Рассчитываем суммы объемов для каждого состава
+  for (const point_idx in data) {
+    if (data[point_idx].content[1][1]) {
+      total_a_volume += data[point_idx].content[1][1];
+    }
+    if (data[point_idx].content[2][1]) {
+      total_b_volume += data[point_idx].content[2][1];
+    }
+    if (data[point_idx].content[3][1]) {
+      total_c_volume += data[point_idx].content[3][1];
+    }
+    if (data[point_idx].content[4][1]) {
+      total_d_volume += data[point_idx].content[4][1];
+    }
+  }
+  
+  // Округляем до 0.5
+  total_a_volume = Math.round(total_a_volume * 2) / 2;
+  total_b_volume = Math.round(total_b_volume * 2) / 2;
+  total_c_volume = Math.round(total_c_volume * 2) / 2;
+  total_d_volume = Math.round(total_d_volume * 2) / 2;
+  
+  // Общий объем всех тестеров
+  const total_volume = total_a_volume + total_b_volume + total_c_volume + total_d_volume;
+  
+  // Рассчитываем компоненты для каждого состава
+  const a_components = calculate_powder_and_water(total_a_volume, density, dry_density);
+  const b_components = calculate_powder_and_water(total_b_volume, density, dry_density);
+  const c_components = calculate_powder_and_water(total_c_volume, density, dry_density);
+  const d_components = calculate_powder_and_water(total_d_volume, density, dry_density);
+  
+  // Рассчитываем компоненты для общей базы
+  const total_components = calculate_powder_and_water(total_volume, density, dry_density);
+
+  const total_testers = size * size;
+  let total_testers_text = 'тестеров';
+  if (total_testers == 9) total_testers_text = 'тестеров';
+  if (total_testers == 16) total_testers_text = 'тестеров';
+  if (total_testers == 25) total_testers_text = 'тестеров';
+  
+  // Создаем HTML для блока с суммами
+  const summary_html = `
+    <div class="card border-0">
+      <div class="card-body p-0">
+        <h5 class="card-title mb-3">Итого ${total_testers} ${total_testers_text}:</h5>
+        <div class="mb-3">
+          <p class="mb-2"><span class="fw-medium">Составы A, B, C, D по отдельности:</span> ${total_a_volume}мл (${a_components.powder_mass}г сухой массы + ${a_components.water_mass}г воды) <span class="text-secondary">(влажность ${a_components.moisture}%)</span></p>
+          <p class="pt-2 border-top">Если база общая: ${total_volume}мл (${total_components.powder_mass}г сухой массы + ${total_components.water_mass}г воды)</p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  return summary_html;
+}
 
 //---------------- Triangle ----------------
 
@@ -89,7 +225,6 @@ function generate_triangle_data(size, tester_volume) {
   
   return data;
 }
-
 
 function generate_triangle_ratios(size) {
   const ratio_tables = {
@@ -214,32 +349,6 @@ function generate_triangle_summary(data, size, density, dry_density) {
   
   return summary_html;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //---------------- Linear ----------------
 
