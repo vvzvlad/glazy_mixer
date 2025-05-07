@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Калькулятор смешания цветов</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/css.css">
+    <script src="js/js.js"></script>
+  </head>
+  <body>
+    <!-- +++L I N E-->
+    <div class="table_container">
+      <div class="controls">
+        <label>Размер линии: 
+          <input type="number" min="1" max="10" value="3" class="line_size">
+        </label>
+      </div>
+      <div class="calc calc__1"></div>
+    </div>
+    
+    <!-- +++R E A C T-->
+    <div class="table_container">
+      <div class="controls">
+        <label>Размеры прямоугольника: 
+          <input type="number" min="1" max="10" value="3" class="rect_x">
+          x
+          <input type="number" min="1" max="10" value="3" class="rect_y">
+        </label>
+      </div>
+      <div class="calc calc__2"></div>
+    </div>
+    
+    <!-- +++T R I A N G L E-->
+    <div class="table_container">
+      <div class="controls">
+        <label>Размер треугольника: 
+          <input type="number" min="1" max="10" value="3" class="triangle_size">
+        </label>
+      </div>
+      <div class="calc calc__3"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Line table data
+        const line_data = {
+          "1": {
+            "name": "1",
+            "content": {
+              "1":[100,24,"#ffff00"],        
+              "2":[null,null,null],
+            }
+          },      
+          "2": {
+            "name": "2",
+            "content": {        
+              "1":[50,12,"#ff0"],        
+              "2":[50,12,"#0f0"],
+            }
+          },
+          "3": {
+            "name": "3",
+            "content": {        
+              "1":[null,null,null],        
+              "2":[100,24,"#0f0"],
+            }
+          },
+        };
+
+        // Rect table data
+        const rect_data = {
+          "1": {
+            "name": "A1",
+            "content": {
+              "1":[100,48,"#645faa"],     
+              "2":[null,null,null],
+              "3":[null,null,null],     
+              "4":[null,null,null],
+            }
+          },      
+          "2": {
+            "name": "A2",
+            "content": {
+              "1":[50,24,"#645faa"],    
+              "2":[50,24,"#00a651"],
+              "3":[null,null,null],     
+              "4":[null,null,null],
+            }
+          },
+          "3": {
+            "name": "A3",
+            "content": {
+              "1":[null,null,null],  
+              "2":[100,48,"#00a651"],  
+              "3":[null,null,null],     
+              "4":[null,null,null],
+            }
+          },
+          "4": {
+            "name": "B1",
+            "content": {
+              "1":[50,24,"#645faa"],     
+              "2":[null,null,null],
+              "3":[null,null,null],     
+              "4":[50,24,"#ed1c24"],
+            }
+          },      
+          "5": {
+            "name": "B2",
+            "content": {
+              "1":[25,12,"#645faa"],    
+              "2":[25,12,"#00a651"],
+              "3":[25,12,"#fff200"],     
+              "4":[25,12,"#ed1c24"],
+            }
+          },
+          "6": {
+            "name": "B3",
+            "content": {
+              "1":[null,null,null],
+              "2":[50,24,"#00a651"],
+              "3":[50,24,"#fff200"],     
+              "4":[null,null,null],
+            }
+          },
+          "7": {
+            "name": "C1",
+            "content": {
+              "1":[null,null,null],     
+              "2":[null,null,null],
+              "3":[null,null,null],     
+              "4":[100,48,"#ed1c24"],
+            }
+          },      
+          "8": {
+            "name": "C2",
+            "content": {
+              "1":[null,null,null],    
+              "2":[null,null,null],
+              "3":[50,24,"#fff200"],     
+              "4":[50,24,"#ed1c24"],
+            }
+          },
+          "9": {
+            "name": "C3",
+            "content": {
+              "1":[null,null,null],
+              "2":[null,null,null],
+              "3":[100,48,"#fff200"],     
+              "4":[null,null,null],
+            }
+          },
+        };
+
+        // Triangle table data
+        const triangle_data = {
+          "1": {
+            "name": "A1",
+            "content": {
+              "1":[100,24,"#645faa"],     
+              "2":[null,null,null],
+              "3":[null,null,null],     
+            }
+          },      
+          "2": {
+            "name": "B1",
+            "content": {
+              "1":[50,12,"#645faa"],    
+              "2":[null,null,null],     
+              "3":[50,12,"#ed1c24"],
+            }
+          },
+          "3": {
+            "name": "B2",
+            "content": {
+              "1":[50,12,"#645faa"],    
+              "2":[50,12,"#fff200"],   
+              "3":[null,null,null],     
+            }
+          },
+          "4": {
+            "name": "C1",
+            "content": {
+              "1":[null,null,null],
+              "2":[null,null,null],     
+              "3":[100,24,"#ed1c24"],     
+            }
+          },      
+          "5": {
+            "name": "C2",
+            "content": {
+              "1":[null,null,null], 
+              "2":[50,12,"#fff200"],
+              "3":[50,12,"#ed1c24"],     
+            }
+          },
+          "6": {
+            "name": "C3",
+            "content": {
+              "1":[null,null,null],
+              "2":[100,24,"#fff200"],
+              "3":[null,null,null],  
+            }
+          }
+        };
+
+        // Event handlers
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+          input.addEventListener('change', () => {
+            const container = input.closest('.table_container');
+            const table = container.querySelector('.calc__1, .calc__2, .calc__3');
+            
+            // Clear old table
+            table.innerHTML = '';
+            
+            if (input.classList.contains('line_size')) {
+              const line_size = parseInt(input.value);
+              const line_data = generate_line_data(line_size);
+              generate_line_table(line_size, line_data, table);
+            } else if (input.classList.contains('rect_x') || input.classList.contains('rect_y')) {
+              const rect_container = input.closest('.table_container');
+              const rect_x = parseInt(rect_container.querySelector('.rect_x').value);
+              const rect_y = parseInt(rect_container.querySelector('.rect_y').value);
+              const rect_data = generate_rect_data(rect_x, rect_y);
+              generate_rect_table(rect_x, rect_y, rect_data, table);
+            } else if (input.classList.contains('triangle_size')) {
+              const triangle_size = parseInt(input.value);
+              const triangle_data = generate_triangle_data(triangle_size);
+              generate_triangle_table(triangle_size, triangle_data, table);
+            }
+          });
+        });
+
+        // Data generation functions
+        function generate_line_data(size) {
+          const data = {};
+          const colors = ['#645faa', '#00a651', '#fff200', '#ed1c24'];
+          
+          for (let i = 1; i <= size; i++) {
+            data[i] = {
+              name: i.toString(),
+              content: {
+                1: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]],
+                2: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]]
+              }
+            };
+          }
+          return data;
+        }
+
+        function generate_rect_data(x, y) {
+          const data = {};
+          const colors = ['#645faa', '#00a651', '#fff200', '#ed1c24'];
+          const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+          
+          let index = 1;
+          for (let row = 0; row < y; row++) {
+            for (let col = 0; col < x; col++) {
+              data[index] = {
+                name: letters[row] + (col + 1),
+                content: {
+                  1: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]],
+                  2: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]],
+                  3: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]],
+                  4: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]]
+                }
+              };
+              index++;
+            }
+          }
+          return data;
+        }
+
+        function generate_triangle_data(size) {
+          const data = {};
+          const colors = ['#645faa', '#00a651', '#fff200', '#ed1c24'];
+          const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+          
+          let index = 1;
+          for (let row = 0; row < size; row++) {
+            for (let col = 0; col <= row; col++) {
+              data[index] = {
+                name: letters[row] + (col + 1),
+                content: {
+                  1: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]],
+                  2: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]],
+                  3: [Math.random() > 0.5 ? 100 : 50, Math.floor(Math.random() * 48), colors[Math.floor(Math.random() * colors.length)]]
+                }
+              };
+              index++;
+            }
+          }
+          return data;
+        }
+
+        // Initial render with generated data
+        generate_line_table(3, generate_line_data(3), document.querySelector('.calc__1'));
+        generate_rect_table(3, 3, generate_rect_data(3, 3), document.querySelector('.calc__2'));
+        generate_triangle_table(3, generate_triangle_data(3), document.querySelector('.calc__3'));
+      });
+    </script>
+  </body>
+</html>
