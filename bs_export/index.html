@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en" class="h-100">
+<html data-bs-theme="light" lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -19,6 +19,16 @@
         .nav-link.stretch-type:not(.active) {
             color: #999 !important;
             opacity: 0.7;
+        }
+        
+        .content-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .flex-grow-container {
+            flex-grow: 1;
         }
     </style>
 
@@ -157,7 +167,7 @@
     </script>
 </head>
 
-<body class="h-100">
+<body>
     <nav class="navbar navbar-expand-lg fixed-top bg-body clean-navbar">
         <div class="container"><a class="navbar-brand logo" href="#">Калькулятор растяжек</a><button data-bs-toggle="collapse" data-bs-target="#navcol-1" class="navbar-toggler"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
@@ -170,39 +180,41 @@
             </div>
         </div>
     </nav>
-    <main class="page h-100 pt-5 mt-2">
-        <section class="clean-block clean-catalog dark pt-sm-4 h-100">
-            <div class="container h-100">
-                <div class="content pt-sm-0 h-100">
-                    <div class="row g-0 pt-sm-0 h-100">
-                        <div class="col-md-3" style="width:233px;">
-                            <div class="filters ps-3 pe-3 pb-5 pt-5 pt-sm-4 mb-sm-0 pb-sm-4">
-                                <div class="filter-item">
-                                    <h3>Растяжка:</h3>
-                                    <div class="mb-3"><label class="form-label" for="lineSize" style="font-size:15px;">Размер растяжки:</label><input type="number" class="form-control" id="lineSize" max="11" min="3" value="3"></div>
-                                    <div class="mb-3"><label class="form-label" for="testerVolume" style="font-size:15px;">Обьем глазури на один тестер:</label><input type="number" class="form-control" id="testerVolume" max="100" min="1" value="5"></div>
-                                    <h3 class="pt-4">Свойства глазури:</h3>
-                                    <div class="mb-3 pe-sm-2"><label class="form-label" for="density" style="font-size:15px;">Итоговая плотность глазури:</label><input type="number" class="form-control" id="density" max="2" min="1" step="0.05" value="1.5"></div>
-                                    <div class="mb-3"><label class="form-label" for="dryDensity" style="font-size:15px;">Истинная плотность сухой смеси:</label><input type="number" class="form-control" id="dryDensity" max="5" min="1.1" step="0.1" value="2.5"></div>
+    <div class="content-wrapper">
+        <main class="page pt-5 mt-2">
+            <section class="clean-block clean-catalog dark pt-sm-4">
+                <div class="container">
+                    <div class="content pt-sm-0">
+                        <div class="row g-0 pt-sm-0">
+                            <div class="col-md-3" style="width:233px;">
+                                <div class="filters ps-3 pe-3 pb-5 pt-5 pt-sm-4 mb-sm-0 pb-sm-4">
+                                    <div class="filter-item">
+                                        <h3>Растяжка:</h3>
+                                        <div class="mb-3"><label class="form-label" for="lineSize" style="font-size:15px;">Размер растяжки:</label><input type="number" class="form-control" id="lineSize" max="11" min="3" value="3"></div>
+                                        <div class="mb-3"><label class="form-label" for="testerVolume" style="font-size:15px;">Обьем глазури на один тестер:</label><input type="number" class="form-control" id="testerVolume" max="100" min="1" value="5"></div>
+                                        <h3 class="pt-4">Свойства глазури:</h3>
+                                        <div class="mb-3 pe-sm-2"><label class="form-label" for="density" style="font-size:15px;">Итоговая плотность глазури:</label><input type="number" class="form-control" id="density" max="2" min="1" step="0.05" value="1.5"></div>
+                                        <div class="mb-3"><label class="form-label" for="dryDensity" style="font-size:15px;">Истинная плотность сухой смеси:</label><input type="number" class="form-control" id="dryDensity" max="5" min="1.1" step="0.1" value="2.5"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col">
-                            <div class="ps-sm-2 pt-sm-4 pe-sm-2 pb-sm-3 calc_glaze_container d-flex flex-column h-100 justify-content-between">
-                                <div class="calc_glaze d-flex flex-column justify-content-center flex-grow-1"></div>
-                                <div class="summary_container mt-auto"></div>
+                            <div class="col">
+                                <div class="ps-sm-2 pt-sm-4 pe-sm-2 pb-sm-3 calc_glaze_container d-flex flex-column">
+                                    <div class="calc_glaze d-flex flex-column justify-content-center flex-grow-1"></div>
+                                    <div class="summary_container mt-3"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </section>
+        </main>
+        <footer class="page-footer dark">
+            <div class="footer-copyright">
+                <p>© 2025 vvzvlad</p>
             </div>
-        </section>
-    </main>
-    <footer class="page-footer dark">
-        <div class="footer-copyright">
-            <p>© 2025 vvzvlad</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/baguetteBox.min.js"></script>
     <script src="assets/js/vanilla-zoom.js"></script>
