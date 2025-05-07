@@ -1,30 +1,60 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Калькулятор смешания цветов</title>
+    <title>Калькулятор растяжек</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/tables.css">
     <link rel="stylesheet" href="css/line_styles.css">
     <script src="js/tables.js"></script>
-
+    <script src="js/glaze_calculator.js"></script>
+    <style>
+      .section_title {
+        font-size: 24px;
+        color: #333;
+        margin: 0 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ed1c24;
+        text-align: center;
+        font-weight: 600;
+      }
+      
+      .mixer_container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      
+      .mixer_section {
+        margin-bottom: 50px;
+      }
+    </style>
   </head>
   <body>
-    <!-- +++L I N E-->
-    <div class="table_container">
-      <div class="controls">
-        <label>Длина растяжки: 
-          <input type="number" min="3" max="11" value="3" class="line_size">
-        </label>
-        <label>Обьем глазури на один тестер: 
-          <input type="number" min="1" max="100" value="5" class="line_tester_volume">
-        </label>
-        <label>Плотность глазури: 
-          <input type="number" min="1.2" max="1.8" value="1.4" step="0.01" class="density">
-        </label>
+    <div class="mixer_container">
+      <!-- +++L I N E-->
+      <div class="table_container">
+        <h2 class="section_title">Линейная растяжка</h2>
+        <div class="controls">
+          <label>Длина растяжки: 
+            <input type="number" min="3" max="11" value="3" class="line_size">
+          </label>
+          <label>Обьем глазури на один тестер: 
+            <input type="number" min="1" max="100" value="5" class="line_tester_volume">
+          </label>
+          <label>Итоговая плотность глазури: 
+            <input type="number" min="1" max="2" value="1.5" step="0.05" class="density">
+          </label>
+          <label>Истинная плотность сухой смеси: 
+            <input type="number" min="1.1" max="5" value="2.5" step="0.1" class="dry_density">
+          </label>
+        </div>
+        <div class="calc calc__1"></div>
+        <div class="summary_container"></div>
       </div>
-      <div class="calc calc__1"></div>
-      <div class="summary_container"></div>
+      
+      <!-- Здесь можно добавить другие секции -->
+      
     </div>
     
     <script>
@@ -126,21 +156,26 @@
           // Общий объем всех тестеров
           const total_volume = total_first_volume + total_second_volume;
           
-          // Получаем значение плотности
+          // Получаем значение плотности и истинной плотности сухой смеси
           const density = parseFloat(document.querySelector('.density').value);
+          const dry_density = parseFloat(document.querySelector('.dry_density').value);
           
-          // Рассчитываем сухую массу
-          const first_dry_mass = Math.round(total_first_volume * density * 10) / 10;
-          const second_dry_mass = Math.round(total_second_volume * density * 10) / 10;
-          const total_dry_mass = Math.round(total_volume * density * 10) / 10;
+          // Рассчитываем компоненты для первого состава
+          const first_components = calculate_powder_and_water(total_first_volume, density, dry_density);
+          
+          // Рассчитываем компоненты для второго состава
+          const second_components = calculate_powder_and_water(total_second_volume, density, dry_density);
+          
+          // Рассчитываем компоненты для общей базы
+          const total_components = calculate_powder_and_water(total_volume, density, dry_density);
           
           // Создаем HTML для блока с суммами
           const summary_html = `
             <div class="summary">
               <h3>Всего надо смешать: ${total_volume}мл</h3>
-              <p>${total_first_volume}мл состава А (${first_dry_mass}г сухой массы при плотности ${density})</p>
-              <p>${total_second_volume}мл состава B (${second_dry_mass}г сухой массы при плотности ${density})</p>
-              <p>Если база общая: ${total_volume}мл общей базы (${total_dry_mass}г сухой массы при плотности ${density})</p>
+              <p>${total_first_volume}мл состава А (${first_components.powder_mass}г сухой массы + ${first_components.water_mass}г воды) (влажность ${first_components.moisture}%)</p>
+              <p>${total_second_volume}мл состава B (${second_components.powder_mass}г сухой массы + ${second_components.water_mass}г воды) (влажность ${second_components.moisture}%)</p>
+              <p>Если база общая: ${total_volume}мл общей базы (${total_components.powder_mass}г сухой массы + ${total_components.water_mass}г воды) (влажность ${total_components.moisture}%)</p>
             </div>
           `;
           
@@ -153,15 +188,16 @@
         const line_data = generate_line_data(initial_size, initial_volume);
         generate_line_table(initial_size, line_data, document.querySelector('.calc__1'));
         
-        // Добавляем обработчик для поля плотности
-        document.querySelector('.density').addEventListener('change', () => {
-          const container = document.querySelector('.table_container');
-          const table = container.querySelector('.calc__1');
-          const line_size = parseInt(container.querySelector('.line_size').value);
-          const tester_volume = parseInt(container.querySelector('.line_tester_volume').value);
-          
-          // Обновляем только итоговую сумму, перерендеринг таблицы не требуется
-          update_summary(generate_line_data(line_size, tester_volume), line_size);
+        // Добавляем обработчик для полей плотности и истинной плотности
+        document.querySelectorAll('.density, .dry_density').forEach(input => {
+          input.addEventListener('change', () => {
+            const container = document.querySelector('.table_container');
+            const line_size = parseInt(container.querySelector('.line_size').value);
+            const tester_volume = parseInt(container.querySelector('.line_tester_volume').value);
+            
+            // Обновляем только итоговую сумму, перерендеринг таблицы не требуется
+            update_summary(generate_line_data(line_size, tester_volume), line_size);
+          });
         });
       });
     </script>
