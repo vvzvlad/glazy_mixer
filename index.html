@@ -1,188 +1,227 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Калькулятор растяжек</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/tables.css">
-    <link rel="stylesheet" href="css/line_styles.css">
-    <script src="js/tables.js"></script>
-    <script src="js/glaze_calculator.js"></script>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Catalog - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
+    <link rel="stylesheet" href="assets/css/baguetteBox.min.css">
+    <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
+
+    <link rel="stylesheet" href="assets/css/tables.css">
+    <link rel="stylesheet" href="assets/css/line_styles.css">
+    <script src="assets/js/tables.js"></script>
+    <script src="assets/js/glaze_calculator.js"></script>
+
     <style>
-      .section_title {
-        font-size: 24px;
-        color: #333;
-        margin: 0 0 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #ed1c24;
-        text-align: center;
-        font-weight: 600;
-      }
-      
-      .mixer_container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      
-      .mixer_section {
-        margin-bottom: 50px;
-      }
-      
-      .controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 20px;
-      }
-      
-      .control_item {
-        display: flex;
-        flex-direction: column;
-        min-width: 200px;
-        flex: 1;
-      }
-      
-      .control_label {
-        margin-bottom: 5px;
-        font-weight: 500;
-      }
-      
-      .control_input {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 100%;
-      }
-      
-      @media (max-width: 768px) {
-        .control_item {
-          min-width: 100%;
+        .nav-link.stretch-type:not(.active) {
+            color: #999 !important;
+            opacity: 0.7;
         }
-      }
+        
+        .content-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .flex-grow-container {
+            flex-grow: 1;
+        }
     </style>
-  </head>
-  <body>
-    <div class="mixer_container">
-      <!-- +++L I N E-->
-      <div class="table_container">
-        <h2 class="section_title">Линейная растяжка</h2>
-        <div class="controls">
-          <div class="control_item">
-            <label class="control_label">Длина растяжки:</label>
-            <input type="number" min="3" max="11" value="3" class="line_size control_input">
-          </div>
-          <div class="control_item">
-            <label class="control_label">Обьем глазури на один тестер:</label>
-            <input type="number" min="1" max="100" value="5" class="line_tester_volume control_input">
-          </div>
-          <div class="control_item">
-            <label class="control_label">Итоговая плотность глазури:</label>
-            <input type="number" min="1" max="2" value="1.5" step="0.05" class="density control_input">
-          </div>
-          <div class="control_item">
-            <label class="control_label">Истинная плотность сухой смеси:</label>
-            <input type="number" min="1.1" max="5" value="2.5" step="0.1" class="dry_density control_input">
-          </div>
-        </div>
-        <div class="calc calc__1"></div>
-        <div class="summary_container"></div>
-      </div>
-      
-      <!-- Здесь можно добавить другие секции -->
-      
-    </div>
-    
+
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // Event handlers
-        document.querySelectorAll('input[type="number"]').forEach(input => {
-          input.addEventListener('change', () => {
-            const container = input.closest('.table_container');
-            const table = container.querySelector('.calc__1');
-            const line_size = parseInt(container.querySelector('.line_size').value);
-            const tester_volume = parseInt(container.querySelector('.line_tester_volume').value);
-            
-            // Clear old table
-            table.innerHTML = '';
-            
-            const line_data = generate_line_data(line_size, tester_volume);
-            generate_line_table(line_size, line_data, table);
-          });
-        });
-
+        let current_stretch_type = "linear"; // Default type
         
-        // Функция для генерации пропорций в зависимости от размера линии
-        
+        function render_linear_table() {
+            const container = document.querySelector('.calc_glaze')
+            const initial_size = parseInt(document.getElementById('lineSize').value);
+            const initial_volume = parseInt(document.getElementById('testerVolume').value);
+            const line_data = generate_line_data(initial_size, initial_volume);
+            container.innerHTML = '';
+            generate_line_table(initial_size, line_data, container);
 
-        // Функция для обновления блока с итоговыми суммами
-        function update_summary(data, size) {
-          const summary_container = document.querySelector('.summary_container');
-          let total_first_volume = 0;
-          let total_second_volume = 0;
-          
-          // Рассчитываем суммы объемов для каждого состава
-          for (let i = 1; i <= size; i++) {
-            if (data[i].content[1][1]) {
-              total_first_volume += data[i].content[1][1];
-            }
-            if (data[i].content[2][1]) {
-              total_second_volume += data[i].content[2][1];
-            }
-          }
-          
-          // Округляем до 0.5
-          total_first_volume = Math.round(total_first_volume * 2) / 2;
-          total_second_volume = Math.round(total_second_volume * 2) / 2;
-          
-          // Общий объем всех тестеров
-          const total_volume = total_first_volume + total_second_volume;
-          
-          // Получаем значение плотности и истинной плотности сухой смеси
-          const density = parseFloat(document.querySelector('.density').value);
-          const dry_density = parseFloat(document.querySelector('.dry_density').value);
-          
-          // Рассчитываем компоненты для первого состава
-          const first_components = calculate_powder_and_water(total_first_volume, density, dry_density);
-          
-          // Рассчитываем компоненты для второго состава
-          const second_components = calculate_powder_and_water(total_second_volume, density, dry_density);
-          
-          // Рассчитываем компоненты для общей базы
-          const total_components = calculate_powder_and_water(total_volume, density, dry_density);
-          
-          // Создаем HTML для блока с суммами
-          const summary_html = `
-            <div class="summary">
-              <p>${total_first_volume}мл состава А (${first_components.powder_mass}г сухой массы + ${first_components.water_mass}г воды) (влажность ${first_components.moisture}%)</p>
-              <p>${total_second_volume}мл состава B (${second_components.powder_mass}г сухой массы + ${second_components.water_mass}г воды) (влажность ${second_components.moisture}%)</p>
-              <p>Если база общая: ${total_volume}мл общей базы (${total_components.powder_mass}г сухой массы + ${total_components.water_mass}г воды)</p>
-            </div>
-          `;
-          
-          summary_container.innerHTML = summary_html;
+            const summary_container = document.querySelector('.summary_container');
+            const density = parseFloat(document.getElementById('density').value);
+            const dry_density = parseFloat(document.getElementById('dryDensity').value);
+            summary_container.innerHTML = generate_linear_summary(line_data, initial_size, density, dry_density);
+            
+
         }
 
-        // Initial render with generated data
-        const initial_size = parseInt(document.querySelector('.line_size').value);
-        const initial_volume = parseInt(document.querySelector('.line_tester_volume').value);
-        const line_data = generate_line_data(initial_size, initial_volume);
-        generate_line_table(initial_size, line_data, document.querySelector('.calc__1'));
+        function render_triangle_table() {
+            const container = document.querySelector('.calc_glaze')
+            const initial_size = parseInt(document.getElementById('lineSize').value);
+            const initial_volume = parseInt(document.getElementById('testerVolume').value);
+            const line_data = generate_triangle_data(initial_size, initial_volume);
+            container.innerHTML = '';
+            generate_triangle_table(initial_size, line_data, container);
+
+            const summary_container = document.querySelector('.summary_container');
+            const density = parseFloat(document.getElementById('density').value);
+            const dry_density = parseFloat(document.getElementById('dryDensity').value);
+            summary_container.innerHTML = generate_triangle_summary(line_data, initial_size, density, dry_density);
+        }
+
+        function render_square_table() {
+            const container = document.querySelector('.calc_glaze')
+            const initial_size = parseInt(document.getElementById('lineSize').value);
+            const initial_volume = parseInt(document.getElementById('testerVolume').value);
+            const line_data = generate_square_data(initial_size, initial_volume);
+            container.innerHTML = '';
+            generate_rect_table(initial_size, initial_size, line_data, container);
+
+            const summary_container = document.querySelector('.summary_container');
+            const density = parseFloat(document.getElementById('density').value);
+            const dry_density = parseFloat(document.getElementById('dryDensity').value);
+            summary_container.innerHTML = generate_square_summary(line_data, initial_size, density, dry_density);
+        }
         
-        // Добавляем обработчик для полей плотности и истинной плотности
-        document.querySelectorAll('.density, .dry_density').forEach(input => {
-          input.addEventListener('change', () => {
-            const container = document.querySelector('.table_container');
-            const line_size = parseInt(container.querySelector('.line_size').value);
-            const tester_volume = parseInt(container.querySelector('.line_tester_volume').value);
+        function set_stretch_type(type) {
+            current_stretch_type = type;
+            console.log(`Selected stretch type: ${type}`);
             
-            // Обновляем только итоговую сумму, перерендеринг таблицы не требуется
-            update_summary(generate_line_data(line_size, tester_volume), line_size);
-          });
+            // Remove active class from all nav links
+            document.querySelectorAll('.stretch-type').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to the selected link
+            document.querySelector(`.stretch-type[data-type="${type}"]`).classList.add('active');
+            
+            // Save to localStorage
+            localStorage.setItem('stretch_type', type);
+
+            generate_calc();
+        }
+        
+        function save_filter_values() {
+            const line_size = document.getElementById('lineSize').value;
+            const tester_volume = document.getElementById('testerVolume').value;
+            const density = document.getElementById('density').value;
+            const dry_density = document.getElementById('dryDensity').value;
+            
+            localStorage.setItem('line_size', line_size);
+            localStorage.setItem('tester_volume', tester_volume);
+            localStorage.setItem('density', density);
+            localStorage.setItem('dry_density', dry_density);
+        }
+        
+        function restore_filter_values() {
+            const line_size = localStorage.getItem('line_size');
+            const tester_volume = localStorage.getItem('tester_volume');
+            const density = localStorage.getItem('density');
+            const dry_density = localStorage.getItem('dry_density');
+            
+            if (line_size) document.getElementById('lineSize').value = line_size;
+            if (tester_volume) document.getElementById('testerVolume').value = tester_volume;
+            if (density) document.getElementById('density').value = density;
+            if (dry_density) document.getElementById('dryDensity').value = dry_density;
+        }
+
+        function generate_calc() {
+            if (current_stretch_type === "linear") {
+                render_linear_table();
+                console.log("linear table generated");
+            } else if (current_stretch_type === "triangle") {
+                render_triangle_table();
+                console.log("triangle table generated");
+            } else if (current_stretch_type === "square") {
+                render_square_table();
+                console.log("square table generated");
+            }
+            // Save filter values to localStorage
+            save_filter_values();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Restore filter values from localStorage
+            restore_filter_values();
+
+            generate_calc();
+            
+
+            
+            // Add event listeners to inputs
+            const filter_inputs = document.querySelectorAll('.filter-item input');
+            filter_inputs.forEach(input => {
+                input.addEventListener('change', generate_calc);
+                input.addEventListener('input', generate_calc);
+            });
+            
+            // Add event listeners to stretch type links
+            document.querySelectorAll('.stretch-type').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    set_stretch_type(this.getAttribute('data-type'));
+                });
+            });
+            
+            // Restore saved stretch type
+            const saved_type = localStorage.getItem('stretch_type');
+            if (saved_type) {
+                set_stretch_type(saved_type);
+            } else {
+                set_stretch_type('linear'); // Default
+            }
         });
-      });
     </script>
-  </body>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top bg-body clean-navbar">
+        <div class="container"><a class="navbar-brand logo" href="#">Калькулятор растяжек</a><button data-bs-toggle="collapse" data-bs-target="#navcol-1" class="navbar-toggler"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav ms-auto"></ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link stretch-type active" data-type="linear" href="#">Линейная растяжка</a></li>
+                    <li class="nav-item"><a class="nav-link stretch-type" data-type="triangle" href="#">Треугольник</a></li>
+                    <li class="nav-item"><a class="nav-link stretch-type" data-type="square" href="#">Квадрат</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content-wrapper">
+        <main class="page pt-5 mt-2">
+            <section class="clean-block clean-catalog dark pt-sm-4">
+                <div class="container">
+                    <div class="content pt-sm-0">
+                        <div class="row g-0 pt-sm-0">
+                            <div class="col-md-3" style="width:233px;">
+                                <div class="filters ps-3 pe-3 pb-5 pt-5 pt-sm-4 mb-sm-0 pb-sm-4">
+                                    <div class="filter-item">
+                                        <h3>Растяжка:</h3>
+                                        <div class="mb-3"><label class="form-label" for="lineSize" style="font-size:15px;">Размер растяжки:</label><input type="number" class="form-control" id="lineSize" max="11" min="3" value="3"></div>
+                                        <div class="mb-3"><label class="form-label" for="testerVolume" style="font-size:15px;">Обьем глазури на один тестер:</label><input type="number" class="form-control" id="testerVolume" max="100" min="1" value="5"></div>
+                                        <h3 class="pt-4">Свойства глазури:</h3>
+                                        <div class="mb-3 pe-sm-2"><label class="form-label" for="density" style="font-size:15px;">Итоговая плотность глазури:</label><input type="number" class="form-control" id="density" max="2" min="1" step="0.05" value="1.5"></div>
+                                        <div class="mb-3"><label class="form-label" for="dryDensity" style="font-size:15px;">Истинная плотность сухой смеси:</label><input type="number" class="form-control" id="dryDensity" max="5" min="1.1" step="0.1" value="2.5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="ps-sm-2 pt-sm-4 pe-sm-2 pb-sm-3 calc_glaze_container d-flex flex-column">
+                                    <div class="calc_glaze d-flex flex-column justify-content-center flex-grow-1"></div>
+                                    <div class="summary_container mt-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="page-footer dark">
+            <div class="footer-copyright">
+                <p>© 2025 vvzvlad, TG: <a href="https://t.me/vvzvlad">@vvzvlad</a></p>
+            </div>
+        </footer>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/baguetteBox.min.js"></script>
+    <script src="assets/js/vanilla-zoom.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
 </html>
-
-
