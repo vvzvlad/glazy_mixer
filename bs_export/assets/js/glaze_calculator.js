@@ -96,6 +96,9 @@ function generate_triangle_ratios(size) {
   const ratio_tables = {
     3: [[100, 0, 0], [50, 50, 0], [50, 0, 50], [0, 100, 0], [0, 50, 50], [0, 0, 100]],
     4: [[100, 0, 0], [67, 33, 0], [67, 0, 33], [33, 67, 0], [33, 33, 33], [33, 0, 67], [0, 100, 0], [0, 67, 33], [0, 33, 67], [0, 0, 100]],
+    5: [[100, 0, 0], [75, 25, 0], [75, 0, 25], [50, 50, 0], [50, 25, 25], [50, 0, 50], [25, 75, 0], [25, 50, 25], [25, 25, 50], [25, 0, 75], [0, 100, 0], [0, 75, 25], [0, 50, 50], [0, 25, 75], [0, 0, 100]],
+    6: [[100, 0, 0], [80, 20, 0], [80, 0, 20], [60, 40, 0], [60, 20, 20], [60, 0, 40], [40, 60, 0], [40, 40, 20], [40, 20, 40], [40, 0, 60], [20, 80, 0], [20, 60, 20], [20, 40, 40], [20, 20, 60], [20, 0, 80], [0, 100, 0], [0, 80, 20], [0, 60, 40], [0, 40, 60], [0, 20, 80], [0, 0, 100]],
+    7: [[100, 0, 0], [83, 17, 0], [83, 0, 17], [67, 33, 0], [67, 17, 17], [67, 0, 33], [50, 50, 0], [50, 33, 17], [50, 17, 33], [50, 0, 50], [33, 67, 0], [33, 50, 17], [33, 33, 33], [33, 17, 50], [33, 0, 67], [17, 83, 0], [17, 67, 17], [17, 50, 33], [17, 33, 50], [17, 17, 67], [17, 0, 83], [0, 100, 0], [0, 83, 17], [0, 67, 33], [0, 50, 50], [0, 33, 67], [0, 17, 83], [0, 0, 100]]
   };
   
   // Возвращаем таблицу пропорций для заданного размера
@@ -135,12 +138,20 @@ function generate_triangle_summary(data, size, density, dry_density) {
   
   // Рассчитываем компоненты для общей базы
   const total_components = calculate_powder_and_water(total_volume, density, dry_density);
+
+  const total_testers = size * (size + 1) / 2;
+  let total_testers_text = '';
+  if (total_testers == 6) total_testers_text = 'тестеров';
+  if (total_testers == 10) total_testers_text = 'тестеров';
+  if (total_testers == 15) total_testers_text = 'тестеров';
+  if (total_testers == 21) total_testers_text = 'тестер';
+  if (total_testers == 28) total_testers_text = 'тестеров';
   
   // Создаем HTML для блока с суммами
   const summary_html = `
     <div class="card border-0">
       <div class="card-body p-0">
-        <h5 class="card-title mb-3">Итого:</h5>
+        <h5 class="card-title mb-3">Итого ${total_testers} ${total_testers_text}:</h5>
         <div class="mb-3">
           <p class="mb-2"><span class="fw-medium">Составы A, B, C по отдельности:</span> ${total_a_volume}мл (${a_components.powder_mass}г сухой массы + ${a_components.water_mass}г воды) <span class="text-secondary">(влажность ${a_components.moisture}%)</span></p>
           <p class="pt-2 border-top">Если база общая: ${total_volume}мл (${total_components.powder_mass}г сухой массы + ${total_components.water_mass}г воды)</p>
