@@ -91,6 +91,22 @@
             // Add active class to the selected link
             document.querySelector(`.stretch-type[data-type="${type}"]`).classList.add('active');
             
+            // Set max value for lineSize based on stretch type
+            const line_size_input = document.getElementById('lineSize');
+            let max_value = 1; 
+            
+            if (type === "linear") max_value = 11;
+            if (type === "triangle") max_value = 9;
+            if (type === "square") max_value = 8;
+            
+            
+            line_size_input.max = max_value;
+            
+            // Ensure current value doesn't exceed the new max
+            if (parseInt(line_size_input.value) > max_value) {
+                line_size_input.value = max_value;
+            }
+            
             // Save to localStorage
             localStorage.setItem('stretch_type', type);
 
