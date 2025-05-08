@@ -1,7 +1,6 @@
 function generate_line_table(size,data,root){
   let calc1 = '<div class="calc-1" style="grid-template-columns:'+ " 1fr".repeat(size) +';"></div><div></div>';
   let svg = '';
-  console.log('root=',root);
 
   root.insertAdjacentHTML('afterbegin',calc1);
   calc1 = document.querySelector('.calc-1');

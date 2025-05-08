@@ -35,7 +35,7 @@ function calculate_powder_and_water(volume, target_density, powder_density) {
 
 //---------------- square ----------------
 
-function generate_square_data(size, tester_volume) {
+function generate_square_data(size, tester_volume, rounding_precision = 0.5) {
   const data = {};
   // Цвета для четырех компонентов
   const a_color = '#FFF200';
@@ -48,17 +48,20 @@ function generate_square_data(size, tester_volume) {
   
   let point_index = 1;
   
+  // Вычисляем множитель для округления на основе точности
+  const rounding_factor = 1 / rounding_precision;
+  
   for (let i = 0; i < ratios.length; i++) {
     const a_ratio = ratios[i][0];  // Процент первого цвета
     const b_ratio = ratios[i][1]; // Процент второго цвета
     const c_ratio = ratios[i][2]; // Процент третьего цвета
     const d_ratio = ratios[i][3]; // Процент четвертого цвета
     
-    // Объем компонентов в зависимости от процентов
-    const a_volume = a_ratio > 0 ? Math.round(tester_volume * a_ratio / 100 * 2) / 2 : null;
-    const b_volume = b_ratio > 0 ? Math.round(tester_volume * b_ratio / 100 * 2) / 2 : null;
-    const c_volume = c_ratio > 0 ? Math.round(tester_volume * c_ratio / 100 * 2) / 2 : null;
-    const d_volume = d_ratio > 0 ? Math.round(tester_volume * d_ratio / 100 * 2) / 2 : null;
+    // Объем компонентов в зависимости от процентов с настраиваемым округлением
+    const a_volume = a_ratio > 0 ? Math.round(tester_volume * a_ratio / 100 * rounding_factor) / rounding_factor : null;
+    const b_volume = b_ratio > 0 ? Math.round(tester_volume * b_ratio / 100 * rounding_factor) / rounding_factor : null;
+    const c_volume = c_ratio > 0 ? Math.round(tester_volume * c_ratio / 100 * rounding_factor) / rounding_factor : null;
+    const d_volume = d_ratio > 0 ? Math.round(tester_volume * d_ratio / 100 * rounding_factor) / rounding_factor : null;
     
     // Определяем цвета компонентов
     const first_color = a_ratio > 0 ? a_color : null;
@@ -131,7 +134,7 @@ function generate_square_ratios(size) {
   return ratio_tables[size] || ratio_tables[3]; // Если размер не найден, используем размер 3
 }
 
-function generate_square_summary(data, size, density, dry_density) {
+function generate_square_summary(data, size, density, dry_density, rounding_precision = 0.5) {
   let total_a_volume = 0;
   let total_b_volume = 0;
   let total_c_volume = 0;
@@ -153,20 +156,23 @@ function generate_square_summary(data, size, density, dry_density) {
     }
   }
   
-  // Округляем до 0.5
-  total_a_volume = Math.round(total_a_volume * 2) / 2;
-  total_b_volume = Math.round(total_b_volume * 2) / 2;
-  total_c_volume = Math.round(total_c_volume * 2) / 2;
-  total_d_volume = Math.round(total_d_volume * 2) / 2;
+  // Вычисляем множитель для округления на основе точности
+  const rounding_factor = 1 / rounding_precision;
+  
+  // Округляем с учетом настраиваемой точности
+  total_a_volume = Math.round(total_a_volume * rounding_factor) / rounding_factor;
+  total_b_volume = Math.round(total_b_volume * rounding_factor) / rounding_factor;
+  total_c_volume = Math.round(total_c_volume * rounding_factor) / rounding_factor;
+  total_d_volume = Math.round(total_d_volume * rounding_factor) / rounding_factor;
   
   // Общий объем всех тестеров
   const total_volume = total_a_volume + total_b_volume + total_c_volume + total_d_volume;
   
   // Рассчитываем компоненты для каждого состава
   const a_components = calculate_powder_and_water(total_a_volume, density, dry_density);
-  const b_components = calculate_powder_and_water(total_b_volume, density, dry_density);
-  const c_components = calculate_powder_and_water(total_c_volume, density, dry_density);
-  const d_components = calculate_powder_and_water(total_d_volume, density, dry_density);
+  //const b_components = calculate_powder_and_water(total_b_volume, density, dry_density);
+  //const c_components = calculate_powder_and_water(total_c_volume, density, dry_density);
+  //const d_components = calculate_powder_and_water(total_d_volume, density, dry_density);
   
   // Рассчитываем компоненты для общей базы
   const total_components = calculate_powder_and_water(total_volume, density, dry_density);
@@ -197,7 +203,7 @@ function generate_square_summary(data, size, density, dry_density) {
 
 //---------------- Triangle ----------------
 
-function generate_triangle_data(size, tester_volume) {
+function generate_triangle_data(size, tester_volume, rounding_precision = 0.5) {
   const data = {};
   // Цвета для трех компонентов
   const a_color = '#FFF200';
@@ -209,15 +215,18 @@ function generate_triangle_data(size, tester_volume) {
   
   let point_index = 1;
   
+  // Вычисляем множитель для округления на основе точности
+  const rounding_factor = 1 / rounding_precision;
+  
   for (let i = 0; i < ratios.length; i++) {
     const a_ratio = ratios[i][0];  // Процент первого цвета
     const b_ratio = ratios[i][1]; // Процент второго цвета
     const c_ratio = ratios[i][2]; // Процент третьего цвета
     
-    // Объем компонентов в зависимости от процентов
-    const a_volume = a_ratio > 0 ? Math.round(tester_volume * a_ratio / 100 * 2) / 2 : null;
-    const b_volume = b_ratio > 0 ? Math.round(tester_volume * b_ratio / 100 * 2) / 2 : null;
-    const c_volume = c_ratio > 0 ? Math.round(tester_volume * c_ratio / 100 * 2) / 2 : null;
+    // Объем компонентов в зависимости от процентов с настраиваемым округлением
+    const a_volume = a_ratio > 0 ? Math.round(tester_volume * a_ratio / 100 * rounding_factor) / rounding_factor : null;
+    const b_volume = b_ratio > 0 ? Math.round(tester_volume * b_ratio / 100 * rounding_factor) / rounding_factor : null;
+    const c_volume = c_ratio > 0 ? Math.round(tester_volume * c_ratio / 100 * rounding_factor) / rounding_factor : null;
     
     // Определяем цвета компонентов
     const first_color = a_ratio > 0 ? a_color : null;
@@ -312,7 +321,7 @@ function generate_triangle_ratios(size) {
   return ratio_tables[size] || ratio_tables[3]; // Если размер не найден, используем размер 3
 }
 
-function generate_triangle_summary(data, size, density, dry_density) {
+function generate_triangle_summary(data, size, density, dry_density, rounding_precision = 0.5) {
   let total_a_volume = 0;
   let total_b_volume = 0;
   let total_c_volume = 0;
@@ -330,18 +339,21 @@ function generate_triangle_summary(data, size, density, dry_density) {
     }
   }
   
-  // Округляем до 0.5
-  total_a_volume = Math.round(total_a_volume * 2) / 2;
-  total_b_volume = Math.round(total_b_volume * 2) / 2;
-  total_c_volume = Math.round(total_c_volume * 2) / 2;
+  // Вычисляем множитель для округления на основе точности
+  const rounding_factor = 1 / rounding_precision;
+  
+  // Округляем с учетом настраиваемой точности
+  total_a_volume = Math.round(total_a_volume * rounding_factor) / rounding_factor;
+  total_b_volume = Math.round(total_b_volume * rounding_factor) / rounding_factor;
+  total_c_volume = Math.round(total_c_volume * rounding_factor) / rounding_factor;
   
   // Общий объем всех тестеров
   const total_volume = total_a_volume + total_b_volume + total_c_volume;
   
   // Рассчитываем компоненты для каждого состава
   const a_components = calculate_powder_and_water(total_a_volume, density, dry_density);
-  const b_components = calculate_powder_and_water(total_b_volume, density, dry_density);
-  const c_components = calculate_powder_and_water(total_c_volume, density, dry_density);
+  //const b_components = calculate_powder_and_water(total_b_volume, density, dry_density);
+  //const c_components = calculate_powder_and_water(total_c_volume, density, dry_density);
   
   // Рассчитываем компоненты для общей базы
   const total_components = calculate_powder_and_water(total_volume, density, dry_density);
@@ -375,7 +387,7 @@ function generate_triangle_summary(data, size, density, dry_density) {
 //---------------- Linear ----------------
 
 // Data generation functions
-function generate_line_data(size, tester_volume) {
+function generate_line_data(size, tester_volume, rounding_precision = 0.5) {
   const data = {};
   // Начальный и конечный цвета линии
   const start_color = '#FFF200';
@@ -384,13 +396,16 @@ function generate_line_data(size, tester_volume) {
   // Создаем таблицу пропорций в зависимости от размера
   const ratios = generate_line_ratios(size);
   
+  // Вычисляем множитель для округления на основе точности
+  const rounding_factor = 1 / rounding_precision;
+  
   for (let i = 1; i <= size; i++) {
     const first_ratio = ratios[i-1][0];  // Процент первого цвета
     const second_ratio = ratios[i-1][1]; // Процент второго цвета
     
-    // Объем компонентов в зависимости от процентов
-    const first_volume = first_ratio > 0 ? Math.round(tester_volume * first_ratio / 100 * 2) / 2 : null;
-    const second_volume = second_ratio > 0 ? Math.round(tester_volume * second_ratio / 100 * 2) / 2 : null;
+    // Объем компонентов в зависимости от процентов с настраиваемым округлением
+    const first_volume = first_ratio > 0 ? Math.round(tester_volume * first_ratio / 100 * rounding_factor) / rounding_factor : null;
+    const second_volume = second_ratio > 0 ? Math.round(tester_volume * second_ratio / 100 * rounding_factor) / rounding_factor : null;
     
     // Цвет зависит от соотношения компонентов
     // Если один из компонентов 0%, используем цвет другого компонента
@@ -433,7 +448,7 @@ function generate_line_ratios(size) {
 }
 
 
-function generate_linear_summary(data, size, density, dry_density) {
+function generate_linear_summary(data, size, density, dry_density, rounding_precision = 0.5) {
   let total_first_volume = 0;
   let total_second_volume = 0;
   
@@ -447,19 +462,19 @@ function generate_linear_summary(data, size, density, dry_density) {
     }
   }
   
-  // Округляем до 0.5
-  total_first_volume = Math.round(total_first_volume * 2) / 2;
-  total_second_volume = Math.round(total_second_volume * 2) / 2;
+  // Вычисляем множитель для округления на основе точности
+  const rounding_factor = 1 / rounding_precision;
+  
+  // Округляем с учетом настраиваемой точности
+  total_first_volume = Math.round(total_first_volume * rounding_factor) / rounding_factor;
+  total_second_volume = Math.round(total_second_volume * rounding_factor) / rounding_factor;
   
   // Общий объем всех тестеров
   const total_volume = total_first_volume + total_second_volume;
   
-  
   // Рассчитываем компоненты для первого состава
   const first_components = calculate_powder_and_water(total_first_volume, density, dry_density);
-  
-  // Рассчитываем компоненты для второго состава
-  const second_components = calculate_powder_and_water(total_second_volume, density, dry_density);
+  //const second_components = calculate_powder_and_water(total_second_volume, density, dry_density);
   
   // Рассчитываем компоненты для общей базы
   const total_components = calculate_powder_and_water(total_volume, density, dry_density);

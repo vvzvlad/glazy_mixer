@@ -60,15 +60,15 @@
             const container = document.querySelector('.calc_glaze')
             const initial_size = parseInt(document.getElementById('lineSize').value);
             const initial_volume = parseInt(document.getElementById('testerVolume').value);
-            const line_data = generate_line_data(initial_size, initial_volume);
+            const data = generate_line_data(initial_size, initial_volume);
             container.innerHTML = '';
-            generate_line_table(initial_size, line_data, container);
+            generate_line_table(initial_size, data, container);
 
             const summary_container = document.querySelector('.summary_container');
             const density = parseFloat(document.getElementById('density').value);
             const dry_density = parseFloat(document.getElementById('dryDensity').value);
-            summary_container.innerHTML = generate_linear_summary(line_data, initial_size, density, dry_density);
-            
+            summary_container.innerHTML = generate_linear_summary(data, initial_size, density, dry_density);
+            return data;
 
         }
 
@@ -76,28 +76,30 @@
             const container = document.querySelector('.calc_glaze')
             const initial_size = parseInt(document.getElementById('lineSize').value);
             const initial_volume = parseInt(document.getElementById('testerVolume').value);
-            const line_data = generate_triangle_data(initial_size, initial_volume);
+            const data = generate_triangle_data(initial_size, initial_volume);
             container.innerHTML = '';
-            generate_triangle_table(initial_size, line_data, container);
+            generate_triangle_table(initial_size, data, container);
 
             const summary_container = document.querySelector('.summary_container');
             const density = parseFloat(document.getElementById('density').value);
             const dry_density = parseFloat(document.getElementById('dryDensity').value);
-            summary_container.innerHTML = generate_triangle_summary(line_data, initial_size, density, dry_density);
+            summary_container.innerHTML = generate_triangle_summary(data, initial_size, density, dry_density);
+            return data;
         }
 
         function render_square_table() {
             const container = document.querySelector('.calc_glaze')
             const initial_size = parseInt(document.getElementById('lineSize').value);
             const initial_volume = parseInt(document.getElementById('testerVolume').value);
-            const line_data = generate_square_data(initial_size, initial_volume);
+            const data = generate_square_data(initial_size, initial_volume);
             container.innerHTML = '';
-            generate_rect_table(initial_size, initial_size, line_data, container);
+            generate_rect_table(initial_size, initial_size, data, container);
 
             const summary_container = document.querySelector('.summary_container');
             const density = parseFloat(document.getElementById('density').value);
             const dry_density = parseFloat(document.getElementById('dryDensity').value);
-            summary_container.innerHTML = generate_square_summary(line_data, initial_size, density, dry_density);
+            summary_container.innerHTML = generate_square_summary(data, initial_size, density, dry_density);
+            return data;
         }
         
         function set_stretch_type(type) {
@@ -160,14 +162,14 @@
 
         function generate_calc() {
             if (current_stretch_type === "linear") {
-                render_linear_table();
-                console.log("linear table generated");
+                const data = render_linear_table();
+                console.log("linear table generated: ", data);
             } else if (current_stretch_type === "triangle") {
-                render_triangle_table();
-                console.log("triangle table generated");
+                const data = render_triangle_table();
+                console.log("triangle table generated: ", data);
             } else if (current_stretch_type === "square") {
-                render_square_table();
-                console.log("square table generated");
+                const data = render_square_table();
+                console.log("square table generated: ", data);
             }
             // Save filter values to localStorage
             save_filter_values();
