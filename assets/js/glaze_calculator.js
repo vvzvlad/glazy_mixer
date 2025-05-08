@@ -33,6 +33,19 @@ function calculate_powder_and_water(volume, target_density, powder_density) {
   };
 } 
 
+function check_zero_volumes(data) {
+  for (const key in data) {
+      const cell = data[key];
+      if (cell.content) {
+          for (const component_key in cell.content) {
+              const component = cell.content[component_key];
+              if (component[0] > 0 && component[1] === 0) return true;
+          }
+      }
+  }
+  return false;
+}
+
 //---------------- square ----------------
 
 function generate_square_data(size, tester_volume, rounding_precision = 0.5) {

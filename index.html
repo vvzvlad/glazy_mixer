@@ -55,12 +55,18 @@
 
     <script>
         let current_stretch_type = "linear"; // Default type
-        
+
         function render_linear_table() {
             const container = document.querySelector('.calc_glaze')
             const initial_size = parseInt(document.getElementById('lineSize').value);
             const initial_volume = parseInt(document.getElementById('testerVolume').value);
-            const data = generate_line_data(initial_size, initial_volume);
+            let data = generate_line_data(initial_size, initial_volume, 0.5);
+            
+            if (check_zero_volumes(data)) data = generate_line_data(initial_size, initial_volume, 0.1);
+            if (check_zero_volumes(data)) data = generate_line_data(initial_size, initial_volume, 0.05);
+            if (check_zero_volumes(data)) data = generate_line_data(initial_size, initial_volume, 0.01);
+
+            
             container.innerHTML = '';
             generate_line_table(initial_size, data, container);
 
@@ -69,14 +75,17 @@
             const dry_density = parseFloat(document.getElementById('dryDensity').value);
             summary_container.innerHTML = generate_linear_summary(data, initial_size, density, dry_density);
             return data;
-
         }
 
         function render_triangle_table() {
             const container = document.querySelector('.calc_glaze')
             const initial_size = parseInt(document.getElementById('lineSize').value);
             const initial_volume = parseInt(document.getElementById('testerVolume').value);
-            const data = generate_triangle_data(initial_size, initial_volume);
+            let data = generate_triangle_data(initial_size, initial_volume, 0.5);
+            
+            if (check_zero_volumes(data)) data = generate_triangle_data(initial_size, initial_volume, 0.1);
+            if (check_zero_volumes(data)) data = generate_triangle_data(initial_size, initial_volume, 0.05);
+            if (check_zero_volumes(data)) data = generate_triangle_data(initial_size, initial_volume, 0.01);
             container.innerHTML = '';
             generate_triangle_table(initial_size, data, container);
 
@@ -91,7 +100,12 @@
             const container = document.querySelector('.calc_glaze')
             const initial_size = parseInt(document.getElementById('lineSize').value);
             const initial_volume = parseInt(document.getElementById('testerVolume').value);
-            const data = generate_square_data(initial_size, initial_volume);
+            let data = generate_square_data(initial_size, initial_volume, 0.5);
+            
+            if (check_zero_volumes(data)) data = generate_square_data(initial_size, initial_volume, 0.1);
+            if (check_zero_volumes(data)) data = generate_square_data(initial_size, initial_volume, 0.05);
+            if (check_zero_volumes(data)) data = generate_square_data(initial_size, initial_volume, 0.01);
+            
             container.innerHTML = '';
             generate_rect_table(initial_size, initial_size, data, container);
 
