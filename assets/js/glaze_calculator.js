@@ -52,7 +52,7 @@ function generate_square_data(size, tester_volume, rounding_precision = 0.5) {
   const rounding_factor = 1 / rounding_precision;
   
   for (let i = 0; i < ratios.length; i++) {
-    const a_ratio = ratios[i][0];  // Процент первого цвета
+    const a_ratio = ratios[i][0]; // Процент первого цвета
     const b_ratio = ratios[i][1]; // Процент второго цвета
     const c_ratio = ratios[i][2]; // Процент третьего цвета
     const d_ratio = ratios[i][3]; // Процент четвертого цвета
@@ -142,18 +142,10 @@ function generate_square_summary(data, size, density, dry_density, rounding_prec
   
   // Рассчитываем суммы объемов для каждого состава
   for (const point_idx in data) {
-    if (data[point_idx].content[1][1]) {
-      total_a_volume += data[point_idx].content[1][1];
-    }
-    if (data[point_idx].content[2][1]) {
-      total_b_volume += data[point_idx].content[2][1];
-    }
-    if (data[point_idx].content[3][1]) {
-      total_c_volume += data[point_idx].content[3][1];
-    }
-    if (data[point_idx].content[4][1]) {
-      total_d_volume += data[point_idx].content[4][1];
-    }
+    if (data[point_idx].content[1][1]) total_a_volume += data[point_idx].content[1][1];
+    if (data[point_idx].content[2][1]) total_b_volume += data[point_idx].content[2][1];
+    if (data[point_idx].content[3][1]) total_c_volume += data[point_idx].content[3][1];
+    if (data[point_idx].content[4][1]) total_d_volume += data[point_idx].content[4][1];
   }
   
   // Вычисляем множитель для округления на основе точности
@@ -328,15 +320,9 @@ function generate_triangle_summary(data, size, density, dry_density, rounding_pr
   
   // Рассчитываем суммы объемов для каждого состава
   for (const point_idx in data) {
-    if (data[point_idx].content[1][1]) {
-      total_a_volume += data[point_idx].content[1][1];
-    }
-    if (data[point_idx].content[2][1]) {
-      total_b_volume += data[point_idx].content[2][1];
-    }
-    if (data[point_idx].content[3][1]) {
-      total_c_volume += data[point_idx].content[3][1];
-    }
+    if (data[point_idx].content[1][1]) total_a_volume += data[point_idx].content[1][1];
+    if (data[point_idx].content[2][1]) total_b_volume += data[point_idx].content[2][1];
+    if (data[point_idx].content[3][1]) total_c_volume += data[point_idx].content[3][1];
   }
   
   // Вычисляем множитель для округления на основе точности
@@ -454,12 +440,8 @@ function generate_linear_summary(data, size, density, dry_density, rounding_prec
   
   // Рассчитываем суммы объемов для каждого состава
   for (let i = 1; i <= size; i++) {
-    if (data[i].content[1][1]) {
-      total_first_volume += data[i].content[1][1];
-    }
-    if (data[i].content[2][1]) {
-      total_second_volume += data[i].content[2][1];
-    }
+    if (data[i].content[1][1]) total_first_volume += data[i].content[1][1];
+    if (data[i].content[2][1]) total_second_volume += data[i].content[2][1];
   }
   
   // Вычисляем множитель для округления на основе точности
